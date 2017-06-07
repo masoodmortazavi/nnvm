@@ -145,52 +145,55 @@ See [example code](../example/src/operator.cc) on how operators can be registere
 
 ## Graph and Pass
 
-When we get more information about the operators.
-We can use them to do optimizations and get more information about the graph.
-Graph is the unit we manipulate in these steps. A Graph in NNVM contains
-two parts:
+With additional information about the operators, we can use them to get 
+additional information about the graph and perform further optimizations.
+
+Graph is the unit we manipulate in a given transformation step. 
+A Graph in NNVM contains two parts:
 - The computation graph structure
 - A attribute map from string to any type ```map<string, shared_ptr<any> >```
-
-The second attribute map is quite important, as we may need different kinds
-of information about the graph during the transformation process. Let it be
+The second attribute map is quite important. During the transformation process, 
+we may need different kinds of information about the graph, e.g.
 shapes of each tensor, types of each tensor or the storage allocation plans.
 
 A ```Pass``` can take a graph with existing attribute information,
 and transform it to the same graph with more attributes, or another graph.
 
-We have bunch of pass implemented in NNVM, including symbolic differentiation,
+We have some passes already implemented in NNVM, including symbolic differentiation,
 memory planning, shape/type inference and we can support more.
 
 ## Executing the Graph
 
-Currently the library defined nothing on how the graph can be executed.
-Execution is intentionally excluded from this module because we believe
-that can be another module, and there can be many ways to execute one graph.
-We can target different runtime platforms, or even write your own ones.
+Currently, the library defines nothing on how the graph would be executed.
+
+We have intentionally excluded the execution system from this module because we believe
+that execution can be managed by another module, and there can be many ways to execute a given graph.
+One can target existing runtime platforms, or even write one's own.
 
 More importantly, the information such as memory allocation plan,
-shape and type of each tensor can be used during execution phase
-to enhance.
+shape and type of each tensor can be used during the execution phase
+to enhance performance.
 
 We can also register more runtime related information to the operator registry,
-and define pass function to do runtime related optimization of the graph.
+and define a pass function to do runtime-related optimization of the graph.
 
 ## Relation to LLVM
 
-NNVM is inspired by LLVM. It is at a more high level, in a sense that there are a lot of optimization
-chance we can have by knowing the high level information about the operator.
+NNVM is inspired by LLVM. However, it is at a higher level, in the sense that there are additional optimization
+opportunities due to the higher-level information about operators.
 On the other hand, we do believe that code generation to LLVM can be a natural extension and can benefit some of the usecases.
 
 ## Unix Philosophy in Learning Systems
 
 There are a few existing computation graph based deep learning frameworks (e.g. Theano, Tensorflow, Caffe2, MXNet etc.).
-NNVM do not intend to become another one. Instead, NNVM summarizes a module that contains
+NNVM does not intend to become another one. Instead, NNVM summarizes a module that ensures
 
 - The graph representation is minimum, with no code dependency
-- Operator attribute allow arbitrary information registered in unified way
-- Invariant of execution layer to be re-targetable to multiple frontend and backend.
+- Operator attributes allow arbitrary information registeration in a unified manner
+- It can target various execution layers to various front ends
 
-We believe this is the correct way for learning system.
-By having more such modules, we can pick one ones we need, and remove the ones we do not want in our use cases.
-Hopefully these effort can make deep learning system research and building easy, fun and rewarding.
+We believe this is the correct approach to developing a machine learning system.
+
+Given multiple choices in a modular system, we can pick the ones we need, and more importantly, remove the ones we do not want in our use cases.
+
+We hope that our modularization effort will make deep learning systems research and development easy, fun and rewarding.
